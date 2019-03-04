@@ -426,6 +426,9 @@ object JsonSupport {
 ```scala
 // /access/rest/product/detail/Routes.scala
 
+import io.circe.syntax._
+import JsonSupport.productDetailEncoder
+
 object Routes {
   def getProductDetailRoute(id: Id): IO[Response] = {
     Response.OK(getProductDetail(id).asJson)
