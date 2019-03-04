@@ -28,14 +28,15 @@ object Model extends AutoDerivation {
 ```
 
 In the example above `AutoDerivation` (`import io.circe.generic.auto._`) brings 
-into scope macros that generate at compile time `Encoder` and `Decoder` 
-instances case classes in scope:
+into scope macros that automatically generate `Encoder` and `Decoder` 
+instances for case classes in scope at compile time. It has the following drawbacks:
 
 - It is hard to control what is being generated
 - It is hard to reason about what is being really used
-- Might take **a lot** of [compilation time](https://www.scala-lang.org/blog/2018/06/04/scalac-profiling.html) (in order to resolve an implicit a macro might get [expanded, resolved and thrown away](https://www.scala-lang.org/blog/2018/06/04/scalac-profiling.html#the-cost-of-implicit-macros))
+- Might result in **a long** [compilation time](https://www.scala-lang.org/blog/2018/06/04/scalac-profiling.html) 
+  (in order to resolve an implicit a macro might get [expanded, resolved and thrown away](https://www.scala-lang.org/blog/2018/06/04/scalac-profiling.html#the-cost-of-implicit-macros))
 
-Always use explicitly derived typeclass instances. Preferably on a `Support` trait:
+Always use explicitly derived type-class instances. Preferably on a `Support` trait:
 
 ```scala
 import io.circe.Decoder
