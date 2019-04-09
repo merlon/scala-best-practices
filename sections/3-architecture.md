@@ -388,7 +388,8 @@ object ApplicationError {
 ```
 
 Please note that by extending `Exception` you can `throw` your errors (less desirable) or raise (and handle) them into
-an effectful `Monad` like `Future`, `cats.IO`, `monix.Task` or just plain `F[_]`(more desirable).
+an [effectful](https://typelevel.org/cats-effect/typeclasses/effect.html) `Monad` like `Future`, `cats.IO`, `monix.Task`
+or just plain `F[_]`(more desirable).
 
 ```scala
 def errorHandler[F[_]: Effect](fa: F[A]): F[Unit] = {
