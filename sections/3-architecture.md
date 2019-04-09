@@ -367,7 +367,7 @@ parameters makes the code more resistant to change and less error-prone,
 versus relying on positioning. The style of indentation chosen here makes
 the instantiation look like a `Map` or a JSON object if you want.
 
-### 3.6. SHOULD have a single source of true of domain errors
+### 3.6. SHOULD have a single source of truth of domain errors
 
 Every application can reach an error state. Such state often has to be reported to a user. Having a single source of
 truth in your error domain helps to report errors in a consistent way to your users as well as track all possible error
