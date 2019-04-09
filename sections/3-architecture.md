@@ -366,3 +366,36 @@ primitives (e.g. ints, strings, etc.), so usage of named
 parameters makes the code more resistant to change and less error-prone,
 versus relying on positioning. The style of indentation chosen here makes
 the instantiation look like a `Map` or a JSON object if you want.
+
+### 3.6. SHOULD have a single source of truth of domain errors
+
+Every application can reach an error state. Such state often has to be reported to a user. Having a single source of
+truth in your error domain helps to report errors in a consistent way to your users as well as track all possible error
+states your application can reach. Single (on an application scale) `sealed trait` should do the trick:
+
+```scala
+sealed trait ApplicationError extends Exception with NoStackTrace
+
+object ApplicationError {
+  final case class ScreeningForDataCompleted(dataId: ID) extends ApplicationError {
+    def toString: String = s"Investigation is completed for data $dataId. Restoring data state is not possible."
+  }
+
+  final case class MissingLogForData(dataId: ID, log: String) extends ApplicationError {
+    def toString: String = s"There is missing $log log for data $dataId. Restoring data state is not possible."
+  }
+}
+```
+
+Please note that by extending `Exception` you can `throw` your errors (less desirable) or raise (and handle) them into
+an [effectful](https://typelevel.org/cats-effect/typeclasses/effect.html) `Monad` like `Future`, `cats.IO`, `monix.Task`
+or just plain `F[_]`(more desirable).
+
+```scala
+def errorHandler[F[_]: Effect](fa: F[A]): F[Unit] = {
+  fa recover {
+    case ScreeningForDataCompleted(_) => ()
+  }
+}
+```
+
