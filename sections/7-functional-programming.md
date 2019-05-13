@@ -19,7 +19,7 @@ experience.
 which enhances your context-bounded computation
 programming experience defined by `map` function. By *context* are meant data-types
 such as `Future[_]`, `Option[_]`, `Either[E, _]`, `IO[_]`, `List[_]` (and similar
-collections), and many more. As most other functional abstractions it is expressed
+collections), and many more. As most other functional abstractions, it is expressed
 in form of a [*type-class*](https://scalac.io/typeclasses-in-scala/).
 
 Generally speaking, *Functor* can be any data type which:
@@ -36,8 +36,8 @@ maintain a well-behaving `map` implementation. For example:
    hence making it useless.
 
 Note that most of the data types mentioned above already provide `map` function
-but *Functor* provides helpful utility functions that can make your code more readable.
-Consider the following example:
+but *Functor*, on top of that, provides helpful utility functions that can make
+your code more readable and easier to write. Consider the following example:
 
 ```scala
 val cleanF = Future(cleanOldReports(reportConfig)).map(_ => Done)
@@ -52,7 +52,7 @@ What is happening here:
 
 1) `cleanOldReports` which is not pure in this case, is being lifted into the
    `Future` context.
-2) The result of this computation is being thrown away and substituted with
+2) The result of this computation is being thrown away by `map` and substituted with
    `Done` instead. This is such a common pattern which has been abstracted
    away into the [`as`](https://typelevel.org/cats/api/cats/Functor.html#as[A,B](fa:F[A],b:B):F[B]) function:
 
@@ -68,12 +68,12 @@ cleanF.onComplete {
 cleanF
 ```
 
-This (a very trivial) example shows how you can utilize the true power of
-*Functor*. The same functorial capabilities are available to you for rest
+This (though very trivial) example shows how you can utilize the true power of
+*Functor*. The same functorial capabilities are available to you for the rest
 of the data types mentioned above as well. To see full list of what it can do
 see [this](https://typelevel.org/cats/api/cats/Functor$.html).
 
-Next, consider the following example which is a part of an `Actor`.
+Next, consider the following example which is a part of an `akka.Actor`.
 
 ```scala
 protected def getActiveReports = context.children.toSet - reportRouter - statisticsCollector
@@ -112,7 +112,7 @@ What is the outcome of this? Do you get:
 - Or maybe just one `ReportStatus` (possibly the last one)?
 
 The answer is non-trivial. It depends on how equality is defined for the data type
-being carried inside the `Set[_]` (a Future[_] in this case). Constructions like this
+being carried inside the `Set[_]` (a `Future[_]` in this case). Constructions like this
 should be avoided using a different collection instead. To read more on this
-topic see: [Mapping sets](https://typelevel.org/blog/2014/06/22/mapping-sets.html) and/or
+topic see [Mapping sets](https://typelevel.org/blog/2014/06/22/mapping-sets.html) and/or
 [Fake theorems for free](https://failex.blogspot.com/2013/06/fake-theorems-for-free.html).
