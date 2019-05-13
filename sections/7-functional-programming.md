@@ -35,7 +35,7 @@ maintain a well-behaving `map` implementation. For example:
 2) Is `Set[_]` a *Functor*? No because its `map` might erase duplicated values,
    hence making it useless.
 
-Note that most of of the data types mentioned above already provide `map` function
+Note that most of the data types mentioned above already provide `map` function
 but *Functor* provides helpful utility functions that can make your code more readable.
 Consider the following example:
 
@@ -79,21 +79,21 @@ Next, consider the following example which is a part of an `Actor`.
 protected def getActiveReports = context.children.toSet - reportRouter - statisticsCollector
 
 override def receive = LoggingReceive {
+  case GetActiveReports => {
+    val apiSender = sender()
+    val statuses = Future
+      .sequence(
+        getActiveReports
+          .map(_ ? MonitorReportStatus)
+          .map(_.mapTo[ReportStatus].map(rs => (rs.reportId, rs.status)))
+      )
+      .map(rep => ActiveReports(rep.toMap))
 
-case GetActiveReports => {
-      val apiSender = sender()
-      val statuses = Future
-        .sequence(
-          getActiveReports
-            .map(_ ? MonitorReportStatus)
-            .map(_.mapTo[ReportStatus].map(rs => (rs.reportId, rs.status)))
-        )
-        .map(rep => ActiveReports(rep.toMap))
-
-      statuses pipeTo apiSender
-      ()
-    }
+    statuses pipeTo apiSender
+    ()
+  }
 ```
+
 When reading through this code, which tries to collect `ReportStatus` from
 workers currently generating customer reports, your senses may start *tingling*.
 And they probably should since `map` (from standard library) over a `Set[_]` is
@@ -102,6 +102,7 @@ performed:
 ```scala
 getActiveReports
   .map(_ ? MonitorReportStatus)
+  .map(_.mapTo[ReportStatus])
 ```
 
 What is the outcome of this? Do you get:
@@ -110,7 +111,8 @@ What is the outcome of this? Do you get:
 - Or maybe one with `Future.Successful` and one with `Future.failed` outcome?
 - Or maybe just one `ReportStatus` (possibly the last one)?
 
-The answer is non-trivial and does not really matter. Constructions like this
-should be avoided using `List[_]` (for example). To read more about this topic see
-[Mapping sets](https://typelevel.org/blog/2014/06/22/mapping-sets.html) and/or
-[Fake theorems for free](https://failex.blogspot.com/2013/06/fake-theorems-for-free.html)
+The answer is non-trivial. It depends on how equality is defined for the data type
+being carried inside the `Set[_]` (a Future[_] in this case). Constructions like this
+should be avoided using a different collection instead. To read more on this
+topic see: [Mapping sets](https://typelevel.org/blog/2014/06/22/mapping-sets.html) and/or
+[Fake theorems for free](https://failex.blogspot.com/2013/06/fake-theorems-for-free.html).
