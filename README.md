@@ -73,10 +73,11 @@ contribute.
   - [5.4. SHOULD do back-pressure](sections/5-actors.md#54-should-do-back-pressure)
   - [5.5. SHOULD NOT use Akka FSM](sections/5-actors.md#55-should-not-use-akka-fsm)
 
-- [6. Generic Programming](section/6-generic-programming.md)
+- [6. Generic Programming](sections/6-generic-programming.md)
   - [6.1 MUST NOT use automatic typeclass instance derivation](sections/6-generic-programming.md#61-must-not-use-automatic-typeclass-instance-derivation)
 
----
+- [7. Functional Programming](sections/7-functional-programming.md)
+  - [7.1 SHOULD embrace *Functor* capabilities](sections/7-functional-programming.md#71-should-embrace-functor-capabilities)
 
 ## Contribute
 
