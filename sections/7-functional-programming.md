@@ -73,7 +73,8 @@ This (though very trivial) example shows how you can utilize the true power of
 of the data types mentioned above as well. To see full list of what it can do
 see [this](https://typelevel.org/cats/api/cats/Functor$.html).
 
-Next, consider the following example which is a part of an `akka.Actor`.
+Next, consider the following example demonstrating functorial laws in action.
+It is a part of an `akka.Actor`:
 
 ```scala
 protected def getActiveReports = context.children.toSet - reportRouter - statisticsCollector
